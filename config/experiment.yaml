@@ -1,0 +1,56 @@
+# Experiment Configuration
+# Project: Reasoning-Depth Budgets for Knowledge-Graph-Grounded Biomedical Reasoning
+# BiomedKAI, KRAGEN, and HyperGraphRAG Against a Matched Chain-of-Thought Control
+
+experiment:
+  title: "Reasoning-Depth Budgets for Knowledge-Graph-Grounded Biomedical Reasoning: BiomedKAI, KRAGEN, and HyperGraphRAG Against a Matched Chain-of-Thought Control"
+  version: "1.0.0"
+  description: "Systematic depth-budgeted evaluation of graph reasoning methods vs flat retrieval-augmented CoT control."
+
+depths:
+  - 1
+  - 2
+  - 3
+
+seeds:
+  - 42
+  - 123
+  - 999
+
+methods:
+  - biomedkai
+  - kragen
+  - hypergraph_rag
+  - flat_control
+
+datasets:
+  - medmcqa
+  - pubmedqa
+
+sampling:
+  pilot_size: 20
+  full_size_per_seed: 300
+  split: "validation"  # use validation split to prevent test set data leakage
+
+budget:
+  strict_depth_budget: true
+  max_retrieval_k: 5
+  record_per_iteration_state: true
+
+hardware:
+  prefer_cuda: true
+  fallback_cpu: true
+  allow_test_mode_on_resource_exhaustion: true
+
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  indexes: "data/indexes"
+  graph: "data/graph"
+  checkpoints: "checkpoints"
+  logs: "logs"
+  results_raw: "results/raw"
+  results_processed: "results/processed"
+  results_tables: "results/tables"
+  results_figures: "results/figures"
+  reports: "reports"

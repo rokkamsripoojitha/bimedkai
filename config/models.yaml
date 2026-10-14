@@ -1,0 +1,30 @@
+# Models and Inference Configuration
+
+llm:
+  model_id: "BioMistral/BioMistral-7B"
+  tokenizer_id: "BioMistral/BioMistral-7B"
+  default_device: "auto"
+  default_dtype: "auto"
+  low_cpu_mem_usage: true
+  max_new_tokens: 256
+  temperature: 0.0
+  do_sample: false
+  top_p: 1.0
+  repetition_penalty: 1.05
+  # Labelled fallback mode if GPU/RAM hardware cannot physically allocate 14GB weights on CPU:
+  test_mode_enabled_if_hardware_constrained: true
+
+embeddings:
+  model_id: "NeuML/biomedbert-base-embeddings"
+  tokenizer_id: "NeuML/biomedbert-base-embeddings"
+  dimension: 768
+  normalize_embeddings: true
+  batch_size: 16
+  max_length: 512
+  device: "cpu"
+
+retrieval:
+  index_type: "IndexFlatIP"
+  top_k: 5
+  normalize_query: true
+  score_metric: "cosine_similarity"

@@ -1,0 +1,587 @@
+{
+  "total_files": 72,
+  "total_records_checked": 3613,
+  "valid_records": 3613,
+  "duplicate_records": 0,
+  "corrupt_records": 0,
+  "depth_budget_violations": 0,
+  "file_summaries": [
+    {
+      "filename": "biomedkai_medmcqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth1_seed42.jsonl",
+      "valid_records": 52,
+      "unique_questions": 52,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth2_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth3_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_medmcqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth1_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth2_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth3_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "biomedkai_pubmedqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth1_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth2_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth3_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_medmcqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth1_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth2_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth3_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "flat_control_pubmedqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth1_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth2_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth3_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_medmcqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth1_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth2_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth3_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "hypergraph_rag_pubmedqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth1_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth2_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth3_seed42.jsonl",
+      "valid_records": 51,
+      "unique_questions": 51,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_medmcqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth1_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth1_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth1_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth2_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth2_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth2_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth3_seed123.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth3_seed42.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    },
+    {
+      "filename": "kragen_pubmedqa_depth3_seed999.jsonl",
+      "valid_records": 50,
+      "unique_questions": 50,
+      "duplicates": 0,
+      "corrupt": 0,
+      "depth_violations": 0
+    }
+  ],
+  "overall_status": "PASSED"
+}

@@ -1,0 +1,40 @@
+# Datasets Configuration
+
+medmcqa:
+  name: "MedMCQA"
+  primary_hf_path: "openlifescienceai/medmcqa"
+  fallback_hf_path: "med_mcqa"
+  split: "validation"
+  id_field: "id"
+  question_field: "question"
+  option_fields:
+    A: "opa"
+    B: "opb"
+    C: "opc"
+    D: "opd"
+  answer_field: "cop"
+  index_to_letter:
+    0: "A"
+    1: "B"
+    2: "C"
+    3: "D"
+  answer_type: "letter"
+  explanation_field: "exp"
+  subject_field: "subject_name"
+  topic_field: "topic_name"
+
+pubmedqa:
+  name: "PubMedQA"
+  primary_hf_path: "qiaojin/PubMedQA"
+  subset: "pqa_labeled"
+  fallback_hf_path: "bigbio/pubmed_qa"
+  split: "train"  # pqa_labeled is natively provided as train split (1,000 labeled samples)
+  id_field: "pubid"
+  question_field: "question"
+  context_field: "context"
+  answer_field: "final_decision"
+  valid_answers:
+    - "yes"
+    - "no"
+    - "maybe"
+  answer_type: "decision"
