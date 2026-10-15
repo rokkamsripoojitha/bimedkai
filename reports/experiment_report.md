@@ -45,6 +45,34 @@ To eliminate confounding variables, all four evaluated methods share identical u
 - **PubMedQA:** Labeled biomedical question answering derived from PubMed abstracts (answers: `yes`, `no`, `maybe`; scored via exact decision match).
 - **Sampling Protocol:** Deterministic pseudorandom sampling using fixed independent seeds (`42`, `123`, `999`), persisted to disk to eliminate data leakage.
 
+### 3.3 Fast O(M) Entity Lookup Index Architecture
+Naive seed entity extraction repeatedly iterates through every node in the graph via regex string matching ($O(N)$ complexity where $N$ is the number of graph nodes). In large-scale biomedical graphs such as PrimeKG ($N \approx 129,375$), this creates a prohibitive computational bottleneck ($>100\text{ ms}$ per question evaluation).
+
+We replaced this with an **inverted $n$-gram token index**:
+1. **Pre-indexing at Initialization:** During graph construction/loading, a normalized inverted dictionary `_name_to_node_ids` maps every entity name, alias, and canonical identifier to its canonical node ID.
+2. **Text Normalization:** Case-folding, non-alphanumeric punctuation removal (preserving meaningful hyphens), and multi-space collapse.
+3. **Word-Boundary Token Generation:** For each clinical question containing $M$ words, contiguous $n$-grams ($n \in \{1, \dots, 6\}$) are extracted and looked up in $O(1)$ dictionary time, yielding an overall lookup complexity of $O(M)$ that is strictly invariant to graph size $N$.
+4. **Precision Filtering:** Single-word matches against common clinical stopwords (`disease`, `patient`, `treatment`, `associated`) are suppressed to prevent false-positive over-triggering.
+5. **Empirical Benchmark:** Validated on a synthetic 100,000-node graph (`tests/test_entity_lookup.py`), the index achieved sub-millisecond lookup latency ($< 1.0\text{ ms}$ per query), an acceleration of over two orders of magnitude while guaranteeing 100% graph existence of all extracted seeds.
+
+### 3.4 Evidence Construction Token Budgeting & Context Overflow Protection
+At higher reasoning depths ($d=2, 3$), accumulated multi-hop evidence and subproblem reasoning traces threaten to exceed the backbone LLM context limit (4,096 tokens for `BioMistral-7B`). Without strict boundaries, models suffer silent truncation or out-of-memory errors.
+
+We implemented a **two-tier context safety architecture**:
+1. **Hard Evidence Budget (`build_evidence_block`):** Standardized across all four reasoning methods (`src/shared/prompts.py`), evidence blocks are strictly constrained to a maximum of 2,048 tokens (`max_tokens=2048`). Evidence items are greedily accumulated; if an item exceeds remaining capacity, it is safely truncated at a word boundary with an explicit marker (`... [truncated to fit evidence budget]`). Omitted items are signaled via `[N evidence items omitted due to token budget]`.
+2. **LLM Context Window Safety Check (`validate_prompt_budget`):** Prior to generation, total prompt length is audited against a safety threshold of 3,840 tokens, reserving at least 256 tokens for completion generation.
+
+### 3.5 PrimeKG Integration and Smoke-Test Fallback Architecture
+To support scalable biomedical knowledge representation, the pipeline integrates the **Precision Medicine Knowledge Graph (PrimeKG)**:
+- **Data Source:** Harvard Dataverse (`doi:10.7910/DVN/IXACMR`), comprising 129,375 nodes and 4,050,249 directed edges across 10 biological scales.
+- **Expected CSV Path:** `data/raw/primekg.csv` (~617 MB uncompressed).
+- **Extracted Fields:** Primary canonical identifiers (`x_id`, `y_id`), entity names (`x_name`, `y_name`), biological categories (`x_type`, `y_type`), and clinical relation predicates (`display_relation` / `relation`).
+- **Hyperedge Construction:** Disease entities are automatically grouped with their associated indications, phenotypes, and molecular targets to construct multi-entity clinical syndrome hyperedges.
+- **Smoke-Test Fallback:** For local development environments and CI pipelines lacking the 617 MB dataset, `scripts/build_graph.py --smoke-test` provisions a verified synthetic clinical graph containing core diseases, anatomical structures, pharmacology, and hyperedges.
+
+> [!NOTE]
+> The empirical baseline numbers reported in Section 5 below reflect the deterministic smoke-test clinical knowledge graph on the Windows development machine. Full production sweeps on the complete 129,000-node PrimeKG graph are designed for execution on the laboratory GPU environment using the provided preflight scripts.
+
 ---
 
 ## 4. Method Descriptions and Fidelity

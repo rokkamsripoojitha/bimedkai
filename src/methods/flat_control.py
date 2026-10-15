@@ -82,7 +82,7 @@ class FlatControlMethod:
                 if ev not in retrieved_evidence:
                     retrieved_evidence.append(ev)
 
-            evidence_text = build_evidence_block(retrieved_evidence)
+            evidence_text = build_evidence_block(retrieved_evidence, max_tokens=2048, tokenizer=self.llm.tokenizer)
             # Strictly NO graph context for the control method
             prompt = build_reasoning_prompt(
                 question_text=formatted_q,
@@ -93,6 +93,7 @@ class FlatControlMethod:
                 dataset_type=dataset_type,
                 method_name=self.name,
                 graph_context=None,
+                tokenizer=self.llm.tokenizer,
             )
 
             response = self.llm.generate(prompt=prompt, system_prompt=system_prompt)

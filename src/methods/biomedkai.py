@@ -99,7 +99,7 @@ class BiomedKAIMethod:
                 f"Graph Paths:\n" + "\n".join(edges_summary)
             )
 
-            evidence_text = build_evidence_block(retrieved_evidence)
+            evidence_text = build_evidence_block(retrieved_evidence, max_tokens=2048, tokenizer=self.llm.tokenizer)
             prompt = build_reasoning_prompt(
                 question_text=formatted_q,
                 evidence_text=evidence_text,
@@ -109,6 +109,7 @@ class BiomedKAIMethod:
                 dataset_type=dataset_type,
                 method_name=self.name,
                 graph_context=graph_context,
+                tokenizer=self.llm.tokenizer,
             )
 
             response = self.llm.generate(prompt=prompt, system_prompt=system_prompt)

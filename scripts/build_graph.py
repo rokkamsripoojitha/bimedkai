@@ -1,8 +1,11 @@
-"""Construct shared biomedical Knowledge Graph and Hypergraph from verified biomedical corpus."""
+"""Construct shared biomedical Knowledge Graph and Hypergraph from full PrimeKG or smoke-test reference corpus."""
 
 import sys
 import os
 import re
+import argparse
+import hashlib
+import time
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.shared.datasets import BiomedicalDatasetLoader
@@ -12,15 +15,25 @@ from src.shared.logging_utils import setup_logger
 logger = setup_logger("biomedkai.build_graph")
 
 
+def get_file_md5(filepath: str, max_bytes: int = 10 * 1024 * 1024) -> str:
+    """Compute MD5 hash over the first 10MB of a file for provenance tracking."""
+    if not os.path.exists(filepath):
+        return "N/A"
+    hasher = hashlib.md5()
+    with open(filepath, "rb") as f:
+        buf = f.read(max_bytes)
+        hasher.update(buf)
+    return hasher.hexdigest()
+
+
 def extract_entities_and_triples_from_corpus(documents):
     """
     Extract documented biomedical entities, relational triples, and multi-entity hyperedges
-    from the reference biomedical corpus texts.
+    from reference biomedical corpus texts for the smoke-test graph.
     """
     triples = []
     hyperedges = []
 
-    # Common biomedical relation markers
     relation_patterns = [
         (r"(\b[a-zA-Z\s\-]{3,25}\b)\s+(?:causes|leads to|results in)\s+(\b[a-zA-Z\s\-]{3,25}\b)", "causes"),
         (r"(\b[a-zA-Z\s\-]{3,25}\b)\s+(?:is characterized by|presents with|shows)\s+(\b[a-zA-Z\s\-]{3,25}\b)", "presents_with"),
@@ -57,7 +70,6 @@ def extract_entities_and_triples_from_corpus(documents):
                         doc_entities.add(head)
                         doc_entities.add(tail)
 
-        # Multi-entity hyperedge: connect all entities co-occurring in the document evidence
         if len(doc_entities) >= 3:
             he_id = f"he_{doc_id}"
             hyperedges.append({
@@ -71,8 +83,9 @@ def extract_entities_and_triples_from_corpus(documents):
     return triples, hyperedges
 
 
-def build_knowledge_graph(output_path: str = "data/graph/biomed_kg.json"):
-    logger.info("Building Knowledge Graph and Hypergraph from biomedical reference corpus...")
+def build_smoke_test_graph(output_path: str = "data/graph/biomed_kg.json") -> BiomedicalKnowledgeGraph:
+    """Build the verified reference sample graph for testing and smoke-test runs."""
+    logger.info("Building smoke-test Knowledge Graph and Hypergraph from verified reference corpus...")
     loader = BiomedicalDatasetLoader()
 
     medmcqa_items = loader.load_medmcqa(split="validation")[:500]
@@ -86,12 +99,10 @@ def build_knowledge_graph(output_path: str = "data/graph/biomed_kg.json"):
         if item.get("context"):
             corpus_docs.append({"id": item["id"], "text": item["context"]})
 
-    logger.info(f"Extracting relational triples and hyperedges from {len(corpus_docs)} source documents...")
     triples, hyperedges = extract_entities_and_triples_from_corpus(corpus_docs)
 
     kg = BiomedicalKnowledgeGraph(kg_path=output_path)
 
-    # Add core verified biomedical entities & relations
     core_facts = [
         ("benign prostatic hyperplasia", "causes", "urinary tract obstruction", "BPH leads to urinary obstruction and bladder hypertrophy.", "Robbins Pathology"),
         ("urinary tract obstruction", "causes", "hydronephrosis", "Chronic obstruction leads to hydronephrosis with renal pelvis dilatation.", "Robbins Pathology"),
@@ -108,7 +119,6 @@ def build_knowledge_graph(output_path: str = "data/graph/biomed_kg.json"):
     for h, r, t, ev, src in core_facts:
         kg.add_relation(head_id=h, relation_type=r, tail_id=t, evidence_text=ev, source_id=src)
 
-    # Core hyperedges connecting syndrome/complex biomedical presentations
     kg.add_hyperedge(
         hyperedge_id="he_bph_hydronephrosis_syndrome",
         entity_ids=["benign prostatic hyperplasia", "urinary tract obstruction", "hydronephrosis", "renal atrophy"],
@@ -124,7 +134,6 @@ def build_knowledge_graph(output_path: str = "data/graph/biomed_kg.json"):
         source_id="Harrison's Internal Medicine",
     )
 
-    # Add extracted corpus triples and hyperedges
     for tr in triples:
         kg.add_relation(
             head_id=tr["head"],
@@ -143,13 +152,74 @@ def build_knowledge_graph(output_path: str = "data/graph/biomed_kg.json"):
             source_id=he["source"],
         )
 
+    kg.build_entity_lookup_index()
     kg.save(output_path)
     logger.info(
-        f"Knowledge Graph construction complete! Total Nodes: {kg.graph.number_of_nodes()}, "
-        f"Edges: {kg.graph.number_of_edges()}, Multi-entity Hyperedges: {len(kg.hyperedges)}. "
-        f"Saved to {output_path}."
+        f"Smoke-test graph complete! Nodes: {kg.graph.number_of_nodes()}, "
+        f"Edges: {kg.graph.number_of_edges()}, Hyperedges: {len(kg.hyperedges)}, "
+        f"Indexed names: {kg._indexed_names_count}. Saved to {output_path}."
+    )
+    return kg
+
+
+def build_knowledge_graph(
+    primekg_path: str = "data/raw/primekg.csv",
+    output_path: str = "data/graph/biomed_kg.json",
+    smoke_test: bool = False,
+    max_rows: int = None,
+):
+    """
+    Main graph builder. Supports loading full PrimeKG CSV, or building the smoke-test fixture.
+    """
+    if smoke_test:
+        logger.info("Flag --smoke-test specified. Constructing verified reference sample graph.")
+        return build_smoke_test_graph(output_path)
+
+    # Check for PrimeKG file
+    if not os.path.exists(primekg_path):
+        logger.warning(
+            f"PrimeKG file not found at '{primekg_path}'.\n"
+            "To build the full knowledge graph, download the PrimeKG dataset from Harvard Dataverse:\n"
+            "  URL: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/IXACMR\n"
+            f"and place 'primekg.csv' at '{primekg_path}'.\n"
+            "Falling back to smoke-test reference graph construction..."
+        )
+        return build_smoke_test_graph(output_path)
+
+    logger.info(f"Loading full PrimeKG dataset from '{primekg_path}' (MD5 prefix: {get_file_md5(primekg_path)})...")
+    kg = BiomedicalKnowledgeGraph(kg_path=output_path)
+    stats = kg.load_primekg_csv(csv_path=primekg_path, max_rows=max_rows, build_hyperedges=True)
+
+    logger.info(
+        f"PrimeKG loading complete in {stats['elapsed_seconds']:.2f}s:\n"
+        f"  Total Rows Read : {stats['total_rows_read']:,}\n"
+        f"  Nodes Added     : {stats['nodes_added']:,}\n"
+        f"  Edges Added     : {stats['edges_added']:,}\n"
+        f"  Hyperedges Added: {stats['hyperedges_added']:,}\n"
+        f"  Indexed Names   : {stats['indexed_names_count']:,}\n"
+        f"  Skipped Rows    : {stats['skipped_rows']:,}"
+    )
+
+    kg.save(output_path)
+    logger.info(f"Full PrimeKG graph and hypergraph persisted to '{output_path}'.")
+    return kg
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Construct Knowledge Graph and Hypergraph from PrimeKG or smoke-test corpus.")
+    parser.add_argument("--primekg-path", type=str, default="data/raw/primekg.csv", help="Path to primekg.csv")
+    parser.add_argument("--output-path", type=str, default="data/graph/biomed_kg.json", help="Output path for graph JSON")
+    parser.add_argument("--smoke-test", action="store_true", help="Build lightweight verified reference graph for testing")
+    parser.add_argument("--max-rows", type=int, default=None, help="Optional maximum rows to load from PrimeKG")
+    args = parser.parse_args()
+
+    build_knowledge_graph(
+        primekg_path=args.primekg_path,
+        output_path=args.output_path,
+        smoke_test=args.smoke_test,
+        max_rows=args.max_rows,
     )
 
 
 if __name__ == "__main__":
-    build_knowledge_graph()
+    main()

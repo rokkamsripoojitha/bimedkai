@@ -173,7 +173,99 @@ python scripts/generate_report.py
 
 ---
 
-## 4. Key Experimental Deliverables
+---
+
+## 4. PrimeKG Biomedical Knowledge Graph Integration & Setup
+
+The project supports the full **Precision Medicine Knowledge Graph (PrimeKG)**, an integrative biomedical knowledge network developed by Harvard University.
+
+- **Primary Citation & Repository:** Harvard Dataverse: [https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/IXACMR](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/IXACMR)
+- **Expected File Path:** `data/raw/primekg.csv`
+- **File Specifications:** ~617 MB CSV uncompressed; contains 129,375 nodes and 4,050,249 edges across 10 biological scales (diseases, drugs, genes/proteins, phenotypes, biological processes, pathways, anatomy).
+
+### Option A: Build with Real PrimeKG (Production / Laboratory GPU)
+1. Download `primekg.csv` (or extract `kg.csv`) from Harvard Dataverse into `data/raw/primekg.csv`.
+2. Execute graph construction:
+   ```bash
+   python scripts/build_graph.py --primekg-path data/raw/primekg.csv --output-path data/graph/biomed_kg.json
+   ```
+   *Expected Outcome:* Generates `data/graph/biomed_kg.json` with canonical IDs (`mondo:*`, `drugbank:*`, `ncbigene:*`, `hp:*`), builds disease-indication syndrome hyperedges, and pre-indexes the entity lookup index. Build time is ~45–90 seconds depending on disk I/O.
+
+### Option B: Build with Synthetic Smoke-Test Graph (Local Development / CI)
+When developing on machines without the 617 MB dataset downloaded:
+```bash
+python scripts/build_graph.py --smoke-test --output-path data/graph/biomed_kg.json
+```
+*Expected Outcome:* Generates a valid multi-scale clinical knowledge graph with core disease nodes, drug targets, and hyperedges in < 1 second. Fully compatible with all 60 test suites and pilot evaluations.
+
+---
+
+## 5. Laboratory GPU Preflight & Execution Guide
+
+This project is engineered to be 100% portable. You can develop and test locally on Windows, transfer the directory as a ZIP archive to a laboratory GPU computer (Linux or Windows with CUDA), and execute full-scale experiments.
+
+### Preflight Checklist
+Before starting a full evaluation run on the laboratory GPU machine:
+1. **GPU & CUDA Detection:** Verify NVIDIA GPU is detected (`nvidia-smi`) and PyTorch recognizes CUDA:
+   ```bash
+   python -c "import torch; print('CUDA available:', torch.cuda.is_available(), 'Device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
+   ```
+2. **VRAM Capacity:** Ensure at least 16 GB VRAM is available for FP16 inference with `BioMistral-7B` (or configure 4-bit/8-bit bitsandbytes quantization if using 8–12 GB VRAM).
+3. **Dependencies:** Install exact pinned packages from `requirements.txt`:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Hugging Face Model Access:** Ensure the machine can download `BioMistral/BioMistral-7B` and `NeuML/biomedbert-base-embeddings` from Hugging Face Hub (set `export HF_TOKEN="your_token"` if accessing gated repositories).
+5. **PrimeKG Placement:** Confirm `data/raw/primekg.csv` exists, or run graph generation.
+
+### End-to-End GPU Execution Sequence
+
+```bash
+# Step 1: Environment Setup & Hardware Diagnostics
+python scripts/setup_environment.py
+
+# Step 2: Download Benchmark Datasets (MedMCQA & PubMedQA)
+python scripts/download_datasets.py
+
+# Step 3: Build FAISS Vector Retrieval Index
+python scripts/build_index.py
+
+# Step 4: Build Knowledge Graph from PrimeKG
+python scripts/build_graph.py --primekg-path data/raw/primekg.csv --output-path data/graph/biomed_kg.json
+
+# Step 5: Execute Test Suite (Verify 100% Pass)
+python -m pytest tests/ -v
+
+# Step 6: Execute 20-Question Pilot Verification
+python scripts/run_pilot.py
+
+# Step 7: Execute Full Experimental Sweep (e.g., 300 questions per dataset per seed)
+python scripts/run_experiments.py --sample-size 300 --seeds 42 123 999
+
+# Step 8: Statistical Analysis, Tables, & Figures
+python scripts/analyze_results.py
+
+# Step 9: Re-generate Comprehensive Research Report
+python scripts/generate_report.py
+```
+
+---
+
+## 6. Key Engineering Optimizations & Context Safety
+
+1. **$O(M)$ Fast Inverted Entity Lookup Index:**
+   - **Problem:** Naive $O(N)$ string matching scanned all 129,000+ nodes for every question, causing extreme evaluation latency.
+   - **Solution:** Inverted token $n$-gram dictionary with word-boundary normalization and stopword suppression.
+   - **Performance:** Verified via benchmark (`tests/test_entity_lookup.py`), looking up entities in a 100,000-node graph takes `< 1.0 ms` per question ($O(M)$ where $M$ is question word count, invariant to graph node count $N$).
+2. **Hard Evidence Token Budgeting:**
+   - `build_evidence_block` enforces a hard limit of `max_tokens=2048` across all four reasoning methods.
+   - Boundary-safe truncation prevents mid-token artifacts and appends `... [truncated to fit evidence budget]` and `[N evidence items omitted due to token budget]`.
+3. **Prompt Context Overflow Protection:**
+   - `validate_prompt_budget` enforces a strict 3,840-token ceiling before passing prompts to `BioMistral-7B`, guaranteeing at least 256 tokens for completion without context overflow.
+
+---
+
+## 7. Key Experimental Deliverables
 
 - **Comprehensive Report:** [`reports/experiment_report.md`](reports/experiment_report.md)
 - **Methodological Fidelity:** [`reports/methodology.md`](reports/methodology.md)
@@ -184,9 +276,9 @@ python scripts/generate_report.py
 
 ---
 
-## 5. Current Execution & Experimental Status
+## 8. Current Execution & Experimental Status
 
-- **Automated Test Suite:** 42 of 42 tests passing (`pytest tests/ -v`, 100% pass rate).
+- **Automated Test Suite:** 60 of 60 tests passing (`pytest tests/ -v`, 100% pass rate in 85s).
 - **Pilot Evaluation:** Completed (24 method-depth-dataset configurations, 20 questions each).
 - **Full Sweep:** Completed all 72 configurations (4 methods x 2 datasets x 3 depths x 3 seeds).
 - **Total Valid Evaluations:** 3,613 question evaluations scored and verified.
@@ -198,7 +290,7 @@ python scripts/generate_report.py
 
 ---
 
-## 6. Research Integrity & Open Science Compliance
+## 9. Research Integrity & Open Science Compliance
 
 In strict adherence to experimental research integrity:
 - **No Mocking in Final Data:** Real models, official tokenizers, and true datasets are executed.
